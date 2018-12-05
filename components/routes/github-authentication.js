@@ -18,7 +18,7 @@ module.exports = function(webserver, controller) {
                         `&client_secret=${process.env.GITHUB_CLIENT_SECRET}` +
                         `&code=${code}` +
                         `&state=${process.env.GITHUB_STATE_TOKEN}` +
-                        `&redirect_uri=http://localhost:3000/github/auth`
+                        `&redirect_uri=${process.env.GITHUB_REDIRECT_URI}`
             )
 
             .then(result => {
