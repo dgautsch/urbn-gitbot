@@ -7,7 +7,7 @@
     "dev": "concurrently --kill-others \"npm run tunnel\" \"npm start\"",
     "start": "nodemon bot.js",
     "tunnel": "lt --port 3000 --subdomain $GITBOT_NAME",
-    "debug": "node --inspect-brk bot.js",
+    "debug": "node --inspect-brk bot.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -41,6 +41,6 @@
     "chatbots",
     "slack"
   ],
-  "author": "ben@howdy.ai",
+  "author": "URBNWeb Team",
   "license": "MIT"
 }
