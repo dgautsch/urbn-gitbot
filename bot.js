@@ -54,6 +54,7 @@ This bot demonstrates many of the core features of Botkit:
 
 // Only request env file if it exists
 var fs = require('fs');
+var env = require('node-env-file');
 var env_file = __dirname + '/.env';
 if (fs.existsSync(env_file)) {
     env(__dirname + '/.env');
