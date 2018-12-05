@@ -74,8 +74,6 @@ const bot_options = {
     clientSigningSecret: process.env.clientSigningSecret,
     // debug: true,
     scopes: ['bot'],
-    studio_token: process.env.studio_token,
-    studio_command_uri: process.env.studio_command_uri,
     require_delivery: true, // required for RTM (Real Time Messaging) support
 };
 
@@ -132,8 +130,7 @@ function usage_tip() {
     console.log('~~~~~~~~~~');
     console.log('Botkit Starter Kit');
     console.log('Execute your bot application like this:');
-    console.log('clientId=<MY SLACK CLIENT ID> clientSecret=<MY CLIENT SECRET> PORT=3000 studio_token=<MY BOTKIT STUDIO TOKEN> node bot.js');
+    console.log('clientId=<MY SLACK CLIENT ID> clientSecret=<MY CLIENT SECRET> PORT=3000 node bot.js');
     console.log('Get Slack app credentials here: https://api.slack.com/apps')
-    console.log('Get a Botkit Studio token here: https://studio.botkit.ai/')
     console.log('~~~~~~~~~~');
 }
