@@ -17,7 +17,7 @@ module.exports = function(webserver, controller) {
                         `?client_id=${process.env.GITHUB_CLIENT_ID}` +
                         `&client_secret=${process.env.GITHUB_CLIENT_SECRET}` +
                         `&code=${code}` +
-                        `&state=${process.env.STATE}` +
+                        `&state=${process.env.GITHUB_STATE_TOKEN}` +
                         `&redirect_uri=http://localhost:3000/github/auth`
             )
 
@@ -44,7 +44,7 @@ module.exports = function(webserver, controller) {
         return res.redirect(`https://github.com/login/oauth/authorize` +
             `?scope=user:email,read:user,read:org` +
             `&client_id=${process.env.GITHUB_CLIENT_ID}` +
-            `&state=${process.env.STATE}`
+            `&state=${process.env.GITHUB_STATE_TOKEN}`
         )
     })
 
