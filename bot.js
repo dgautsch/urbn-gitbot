@@ -74,7 +74,9 @@ const bot_options = {
     clientSigningSecret: process.env.clientSigningSecret,
     // debug: true,
     scopes: ['bot'],
-    require_delivery: true, // required for RTM (Real Time Messaging) support
+    // Required for RTM (Real Time Messaging) support
+    // See https://botkit.ai/docs/readme-slack.html#require-delivery-confirmation-for-rtm-messages
+    require_delivery: true,
 };
 
 // Use a mongo database if specified, otherwise store in a JSON file local to the app.
