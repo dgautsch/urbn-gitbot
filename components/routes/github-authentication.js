@@ -1,5 +1,6 @@
-var axios = require('axios')
-let debug = require('debug')('botkit:main')
+const debug = require('debug')('github-authentication:debug')
+const error = require('debug')('github-authentication:error')
+const axios = require('axios')
 const octokit = require('@octokit/rest')
 
 
@@ -8,7 +9,7 @@ module.exports = function(webserver, controller) {
     debug('Configured /github/auth url');
     webserver.get('/github/auth', (req, res) => {
         debug('entered on /github/auth')
-        let { code, access_token, token_type } = req.query
+        const { code, access_token, token_type } = req.query
 
         if (code) {
             debug('Bot Code: ', code);
@@ -33,7 +34,7 @@ module.exports = function(webserver, controller) {
         } else if (access_token && token_type) {
             debug(access_token, token_type)
         } else {
-            debug("response with no code")
+            error("response with no code")
         }
         
         res.redirect('/')
