@@ -1,5 +1,6 @@
 .db
 .env
+*.log
 node_modules
 components/routes/_*
 .sass-cache/*
