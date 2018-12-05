@@ -15,7 +15,6 @@
     "botkit": "^0.6.21",
     "botkit-storage-mongo": "^1.0.6",
     "botkit-studio-metrics": "^0.0.2",
-    "concurrently": "^4.1.0",
     "cookie-parser": "^1.4.3",
     "debug": "^2.3.3",
     "express": "^4.14.0",
@@ -27,6 +26,7 @@
     "wordfilter": "^0.2.6"
   },
   "devDependencies": {
+    "concurrently": "^4.1.0",
     "localtunnel": "^1.9.1"
   },
   "repository": {
