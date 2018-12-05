@@ -7,14 +7,13 @@
     "dev": "concurrently --kill-others \"npm run tunnel\" \"npm start\"",
     "start": "nodemon bot.js",
     "tunnel": "lt --port 3000 --subdomain $GITBOT_NAME",
-    "debug": "node --inspect-brk bot.js"
+    "debug": "node --inspect-brk bot.js",
   },
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.15.2",
     "botkit": "^0.6.21",
     "botkit-storage-mongo": "^1.0.6",
-    "botkit-studio-metrics": "^0.0.2",
     "cookie-parser": "^1.4.3",
     "debug": "^2.3.3",
     "express": "^4.14.0",
