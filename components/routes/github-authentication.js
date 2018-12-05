@@ -1,23 +1,52 @@
-var debug = require('debug')('botkit:incoming_webhooks');
-var axios = require('axios')
+const debug = require('debug')('github-authentication:debug')
+const error = require('debug')('github-authentication:error')
+const axios = require('axios')
+const octokit = require('@octokit/rest')
+
 
 module.exports = function(webserver, controller) {
 
     debug('Configured /github/auth url');
     webserver.get('/github/auth', (req, res) => {
-        let code = req.query.code
+        debug('entered on /github/auth')
+        const { code, access_token, token_type } = req.query
+
         if (code) {
-            // add OAuth code to db
+            debug('Bot Code: ', code);
+                        // add OAuth code to db
+            axios.post(`https://github.com/login/oauth/access_token` +
+                        `?client_id=${process.env.GITHUB_CLIENT_ID}` +
+                        `&client_secret=${process.env.GITHUB_CLIENT_SECRET}` +
+                        `&code=${code}` +
+                        `&state=${process.env.GITHUB_STATE_TOKEN}` +
+                        `&redirect_uri=${process.env.GITHUB_REDIRECT_URI}`
+            )
 
+            .then(result => {
+                debug(result.data)
+                result.data.split('&').forEach(e => {
+                    debug(e.split('='))
+                })
+
+            }).catch(err => debug(err))
+
+
+        } else if (access_token && token_type) {
+            debug(access_token, token_type)
         } else {
-            console.log("resonse with no code")
+            error("response with no code")
         }
-
+        
         res.redirect('/')
     })
     
     webserver.get('/github', (req, res) => {
-        return res.redirect(`https://github.com/login/oauth/authorize?scope=user:email,read:user,read:org&client_id=${GITHUB_CLIENT_ID}`)
+        debug('entered on /github')
+        return res.redirect(`https://github.com/login/oauth/authorize` +
+            `?scope=user:email,read:user,read:org` +
+            `&client_id=${process.env.GITHUB_CLIENT_ID}` +
+            `&state=${process.env.GITHUB_STATE_TOKEN}`
+        )
     })
 
 }
