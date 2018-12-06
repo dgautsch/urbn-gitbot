@@ -1,4 +1,5 @@
 const debug = require('debug')('message:github');
+const axios = require('axios');
 
 function gitHubAuth(controller) {
     // this should be converted to a slash command
@@ -6,24 +7,44 @@ function gitHubAuth(controller) {
         controller.storage.users.get(message.user, (err, user) => {
             if (err) {
                 console.error(err);
-                bot.replyInteractive(message, {
-                    text: 'Something went wrong :(',
-                    replace_original: false,
-                    response_type: 'ephemeral',
-                });
-                return;
-            }
-            if (user.id && user.github_bearer) {
-                controller.trigger('get_github_prs', [bot, message]);
-            } else {
                 controller.trigger('do_github_auth', [bot, message]);
+            } else if (user.id && user.github_bearer) {
+                controller.trigger('get_github_prs', [bot, message]);
             }
         });
     });
 
     controller.on('get_github_prs', (bot, message) => {
         // @todo add logic to make the GitHub request for PRs.
-        bot.reply(message, 'Here are your PRS');
+        axios.get('https://api.github.com/repos/mgreenberg5/URBN-GITBOT/pulls')
+            .then((result) => {
+                let openPrs = '';
+                if (result) {
+                    result.data.forEach((pr) => {
+                        /* eslint-disable-next-line */
+                        const { title, url } = pr;
+                        /* eslint-disable-next-line */
+                        openPrs += `<${url}|${title}>, \n`;
+                    });
+                }
+
+                bot.reply(message, {
+                    attachments: [
+                        {
+                            title: 'GitHub PRs',
+                            pretext: 'Here are your PRs for review.',
+                            text: openPrs,
+                            mrkdwn_in: ['text', 'pretext'],
+                        },
+                    ],
+                }, (err) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Experiment finished');
+                    }
+                });
+            });
     });
 
     controller.on('do_github_auth', (bot, message) => {
