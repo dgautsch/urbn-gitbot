@@ -118,8 +118,8 @@ module.exports = (controller) => {
          * Show the creators
          */
         case 'creators':
-        case 'team':
         case 'humans':
+        case 'team':
             controller.trigger('get_creator_message_ephemeral', [bot, message]);
             break;
 

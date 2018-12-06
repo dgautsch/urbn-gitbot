@@ -5,11 +5,13 @@ const config = require('../config');
 
 const helpMessage = `I'm here to help you find out what PRs you currently have open and which of them need your attention. In order to get the most out of me, you can use the following slash commands:
 
-* \`/${config.UGB_SLASH_COMMAND} pr\` - Pull all PRs
+* \`/${config.UGB_SLASH_COMMAND} auth|authenticate\` - Login to GitHub
+* \`/${config.UGB_SLASH_COMMAND} pr\` - Alias of \`pr list\`
+* \`/${config.UGB_SLASH_COMMAND} pr list\` - Pull all open PRs
 * \`/${config.UGB_SLASH_COMMAND} pr reviewer\` - Pull PRs where you are a reviewer
 * \`/${config.UGB_SLASH_COMMAND} pr assigned\` - Pull PRs where you are an assignee
-* \`/${config.UGB_SLASH_COMMAND} help\` - Additional information
-* \`/${config.UGB_SLASH_COMMAND} creators\` - The lovely folks who made me`;
+* \`/${config.UGB_SLASH_COMMAND} creators|humans|team\` - The lovely folks who made me
+* \`/${config.UGB_SLASH_COMMAND} help\` - Additional information`;
 
 module.exports = (controller) => {
     // Generic help messaging event
@@ -99,7 +101,7 @@ Does that help? No? You could always try turning it off and then back on again.`
 
     // Someone asks who created me
 
-    const creatorsMessage = `I was created during the 2018 URBN Fall Hackathon in a join effort by the following humans:
+    const creatorsMessage = `I was created during the 2018 URBN Fall Hackathon in a joint effort by the following humans:
 
 *Allan Ashenfelter* - Manager
 *Dan Gautsch* - Technical Lead UCC
