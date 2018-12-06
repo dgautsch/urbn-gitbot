@@ -149,7 +149,10 @@ Does that help? No? You could always try turning it off and then back on again.`
     const creatorStrings = [
         // eslint-disable-next-line no-useless-escape
         '^who made you\??$',
+        // eslint-disable-next-line no-useless-escape
+        '^who created you\??$',
         '^creators$',
+        '^humans$',
     ];
 
     controller.hears(creatorStrings, 'direct_mention', (bot, message) => {
