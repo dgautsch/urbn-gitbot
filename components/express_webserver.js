@@ -1,18 +1,18 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var querystring = require('querystring');
-var debug = require('debug')('botkit:webserver');
-var http = require('http');
-var hbs = require('express-hbs');
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const http = require('http');
+const hbs = require('express-hbs');
 
-module.exports = function(controller) {
-
-    var webserver = express();
-    webserver.use(function(req, res, next) {
+/* eslint-disable no-param-reassign */
+function webServer(controller) {
+    const webserver = express();
+    webserver.use((req, res, next) => {
         req.rawBody = '';
 
-        req.on('data', function(chunk) {
+        req.on('data', (chunk) => {
             req.rawBody += chunk;
         });
 
@@ -23,35 +23,43 @@ module.exports = function(controller) {
     webserver.use(bodyParser.urlencoded({ extended: true }));
 
     // set up handlebars ready for tabs
-    webserver.engine('hbs', hbs.express4({partialsDir: __dirname + '/../views/partials'}));
+    webserver.engine('hbs', hbs.express4({ partialsDir: `${__dirname}/../views/partials` }));
     webserver.set('view engine', 'hbs');
-    webserver.set('views', __dirname + '/../views/');
+    webserver.set('views', `${__dirname}/../views/`);
 
     // import express middlewares that are present in /components/express_middleware
-    var normalizedPath = require("path").join(__dirname, "express_middleware");
-    require("fs").readdirSync(normalizedPath).forEach(function(file) {
-        require("./express_middleware/" + file)(webserver, controller);
-    });
+    const middlewarePath = path.join(__dirname, 'middleware');
+
+    if (fs.existsSync(middlewarePath)) {
+        require('fs').readdirSync(middlewarePath).forEach((file) => {
+            /* eslint-disable-next-line */
+            require(`./middleware/${file}`)(webserver, controller);
+        });
+    }
 
     webserver.use(express.static('public'));
 
-    var server = http.createServer(webserver);
+    const server = http.createServer(webserver);
 
-    server.listen(process.env.PORT || 3000, null, function() {
-
-        console.log('Express webserver configured and listening at http://localhost:' + process.env.PORT || 3000);
-
+    server.listen(process.env.PORT || 3000, null, () => {
+        console.log(`Express webserver configured and listening at http://localhost:${process.env.PORT}` || 3000);
     });
 
     // import all the pre-defined routes that are present in /components/routes
-    var normalizedPath = require("path").join(__dirname, "routes");
-    require("fs").readdirSync(normalizedPath).forEach(function(file) {
-      require("./routes/" + file)(webserver, controller);
-    });
+    const routerPath = path.join(__dirname, 'routes');
+
+    if (fs.existsSync(routerPath)) {
+        fs.readdirSync(routerPath).forEach((file) => {
+            /* eslint-disable-next-line */
+            require(`./routes/${file}`)(webserver, controller);
+        });
+    }
 
     controller.webserver = webserver;
     controller.httpserver = server;
 
     return webserver;
-
 }
+
+
+module.exports = webServer;

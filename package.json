@@ -3,9 +3,14 @@
   "version": "0.0.2",
   "description": "A starter kit for building a custom Slack bot with Botkit Studio",
   "main": "bot.js",
+  "engines": {
+    "node": ">=8.11.0",
+    "npm": ">=5.7.1"
+  },
   "scripts": {
     "dev": "concurrently --kill-others \"npm run tunnel\" \"npm start\"",
     "start": "nodemon bot.js",
+    "lint": "eslint .",
     "tunnel": "lt --port 3000 --subdomain $GITBOT_NAME",
     "debug": "node --inspect-brk bot.js"
   },
@@ -27,6 +32,10 @@
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
     "localtunnel": "^1.9.1"
   },
   "repository": {
