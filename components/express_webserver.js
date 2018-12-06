@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -26,11 +28,14 @@ function webServer(controller) {
     webserver.set('views', `${__dirname}/../views/`);
 
     // import express middlewares that are present in /components/express_middleware
-    const middlewarePath = require('path').join(__dirname, 'express_middleware');
-    require('fs').readdirSync(middlewarePath).forEach((file) => {
-        /* eslint-disable-next-line */
-        require(`./express_middleware/${file}`)(webserver, controller);
-    });
+    const middlewarePath = path.join(__dirname, 'middleware');
+
+    if (fs.existsSync(middlewarePath)) {
+        require('fs').readdirSync(middlewarePath).forEach((file) => {
+            /* eslint-disable-next-line */
+            require(`./middleware/${file}`)(webserver, controller);
+        });
+    }
 
     webserver.use(express.static('public'));
 
@@ -41,11 +46,14 @@ function webServer(controller) {
     });
 
     // import all the pre-defined routes that are present in /components/routes
-    const routerPath = require('path').join(__dirname, 'routes');
-    require('fs').readdirSync(routerPath).forEach((file) => {
-        /* eslint-disable-next-line */
-        require(`./routes/${file}`)(webserver, controller);
-    });
+    const routerPath = path.join(__dirname, 'routes');
+
+    if (fs.existsSync(routerPath)) {
+        fs.readdirSync(routerPath).forEach((file) => {
+            /* eslint-disable-next-line */
+            require(`./routes/${file}`)(webserver, controller);
+        });
+    }
 
     controller.webserver = webserver;
     controller.httpserver = server;
