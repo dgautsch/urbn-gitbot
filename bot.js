@@ -18,8 +18,8 @@ function usageTip() {
 }
 
 if (!process.env.PORT) {
-  usage_tip();
-  process.exit(1);
+    usageTip();
+    throw new Error('No port set');
 }
 
 const Botkit = require('botkit');
@@ -53,7 +53,7 @@ if (process.env.clientId && process.env.clientSecret) {
         res.render('index', {
             domain: req.get('host'),
             protocol: req.protocol,
-            layout: 'layouts/default'
+            layout: 'layouts/default',
         });
     });
 
@@ -67,8 +67,8 @@ if (process.env.clientId && process.env.clientSecret) {
     const normalizedPath = require('path').join(__dirname, 'skills');
 
     // Require all skills
-    require("fs").readdirSync(normalizedPath).forEach((file) => {
-        require("./skills/" + file)(controller);
+    require('fs').readdirSync(normalizedPath).forEach((file) => {
+        require(`./skills/${file}`)(controller);
     });
 } else {
     webserver.get('/', (req, res) => {
