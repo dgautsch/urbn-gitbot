@@ -12,11 +12,9 @@ const helpMessage = `I'm here to help you find out what PRs you currently have o
 * \`/${config.UGB_SLASH_COMMAND} creators\` - The lovely folks who made me`;
 
 module.exports = (controller) => {
-
     // Generic help messaging event
 
     controller.on('get_help_message', (bot, message, initialMessage) => {
-
         bot.reply(message, {
             ...(initialMessage ? {
                 text: initialMessage,
@@ -31,10 +29,11 @@ module.exports = (controller) => {
             }],
         });
 
+        // Acknowledge reply success
+        bot.replyAcknowledge();
     });
 
     controller.on('get_help_message_ephemeral', (bot, message, initialMessage) => {
-
         bot.replyInteractive(message, {
             ...(initialMessage ? {
                 text: initialMessage,
@@ -49,6 +48,8 @@ module.exports = (controller) => {
             }],
         });
 
+        // Acknowledge reply success
+        bot.replyAcknowledge();
     });
 
     // Bot joins a channel
@@ -91,6 +92,9 @@ Does that help? No? You could always try turning it off and then back on again.`
         };
 
         bot.reply(message, messageObj);
+
+        // Acknowledge reply success
+        bot.replyAcknowledge();
     });
 
     // Someone asks who created me
@@ -105,13 +109,12 @@ Does that help? No? You could always try turning it off and then back on again.`
 *John Zlotek* - Co-op`;
 
     controller.on('get_creator_message', (bot, message, initialMessage) => {
-
         bot.reply(message, {
             ...(initialMessage ? {
                 text: initialMessage,
             } : {}),
             attachments: [{
-                title: `Beep, boop! Here are the humans that created me!`,
+                title: 'Beep, boop! Here are the humans that created me!',
                 text: creatorsMessage,
                 mrkdwn_in: [
                     'text',
@@ -120,16 +123,17 @@ Does that help? No? You could always try turning it off and then back on again.`
             }],
         });
 
+        // Acknowledge reply success
+        bot.replyAcknowledge();
     });
 
     controller.on('get_creator_message_ephemeral', (bot, message, initialMessage) => {
-
         bot.replyInteractive(message, {
             ...(initialMessage ? {
                 text: initialMessage,
             } : {}),
             attachments: [{
-                title: `Beep, boop! Here are the humans that created me!`,
+                title: 'Beep, boop! Here are the humans that created me!',
                 text: creatorsMessage,
                 mrkdwn_in: [
                     'text',
@@ -138,9 +142,12 @@ Does that help? No? You could always try turning it off and then back on again.`
             }],
         });
 
+        // Acknowledge reply success
+        bot.replyAcknowledge();
     });
 
     const creatorStrings = [
+        // eslint-disable-next-line no-useless-escape
         '^who made you\??$',
         '^creators$',
     ];
@@ -149,5 +156,4 @@ Does that help? No? You could always try turning it off and then back on again.`
         const initialMessage = `Thanks for asking, <@${message.user}>!`;
         controller.trigger('get_creator_message', [bot, message, initialMessage]);
     });
-
 };
