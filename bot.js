@@ -17,9 +17,9 @@ function usageTip() {
     console.log('~~~~~~~~~~');
 }
 
-if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
-    usageTip();
-    // process.exit(1);
+if (!process.env.PORT) {
+  usage_tip();
+  process.exit(1);
 }
 
 const Botkit = require('botkit');
@@ -28,11 +28,7 @@ const botOptions = {
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
     clientSigningSecret: process.env.clientSigningSecret,
-    // debug: true,
     scopes: ['bot'],
-    // Required for RTM (Real Time Messaging) support
-    // See https://botkit.ai/docs/readme-slack.html#require-delivery-confirmation-for-rtm-messages
-    require_delivery: true,
 };
 
 // Use a mongo database if specified, otherwise store in a JSON file local to the app.
@@ -57,8 +53,7 @@ if (process.env.clientId && process.env.clientSecret) {
         res.render('index', {
             domain: req.get('host'),
             protocol: req.protocol,
-            glitch_domain: process.env.PROJECT_DOMAIN,
-            layout: 'layouts/default',
+            layout: 'layouts/default'
         });
     });
 
@@ -71,8 +66,9 @@ if (process.env.clientId && process.env.clientSecret) {
 
     const normalizedPath = require('path').join(__dirname, 'skills');
 
-    require('fs').readdirSync(normalizedPath).forEach((file) => {
-        require(`./skills/${file}`)(controller);
+    // Require all skills
+    require("fs").readdirSync(normalizedPath).forEach((file) => {
+        require("./skills/" + file)(controller);
     });
 } else {
     webserver.get('/', (req, res) => {
