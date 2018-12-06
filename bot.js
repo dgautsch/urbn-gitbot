@@ -53,7 +53,7 @@ if (process.env.clientId && process.env.clientSecret) {
         res.render('index', {
             domain: req.get('host'),
             protocol: req.protocol,
-            layout: 'layouts/default'
+            layout: 'layouts/default',
         });
     });
 
@@ -70,10 +70,10 @@ if (process.env.clientId && process.env.clientSecret) {
     require('fs').readdirSync(normalizedPath).forEach((file) => {
         const path = `./skills/${file}`;
         fs.lstat(path, (err, stats) => {
-
             // Handle general errors
             if (err) {
-                return console.log(err);
+                console.log(err);
+                return;
             }
 
             // If this is a skills file, require it
