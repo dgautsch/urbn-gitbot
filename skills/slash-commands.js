@@ -16,17 +16,52 @@ function processPRList(bot, message) {
     const userPrCollection = getUserPrCollection();
 
     // Add each PR to a message attachment
-    userPrCollection.forEach(pr => messageAttachments.push({
-        title: pr.title,
-        title_link: pr.html_url,
-        text: `_Assigned to *${pr.assignee.login}*, last updated *${moment(pr.updated_at).format('MMMM Do YYYY')}* at *${moment(pr.updated_at).format('h:mm a')}*_`,
-        mrkdwn_in: [
-            'text',
-        ],
-    }));
+    userPrCollection.forEach((pr) => {
+        const createdByDateString = `*${moment(pr.created_at).format('MMMM Do YYYY')}* at *${moment(pr.created_at).format('h:mm a')}*`;
+        const lastUpdatedDateString = `*${moment(pr.updated_at).format('MMMM Do YYYY')}* at *${moment(pr.updated_at).format('h:mm a')}*`;
+
+        // Labels
+        let labels = '';
+        const labelsObj = pr.labels.map(label => `[${label.name}]`);
+        if (pr.labels.length) {
+            labels = ` - ${labelsObj.join(' ')}`;
+        }
+
+        // Milestone
+        let milestone = '';
+        if (pr.milestone) {
+            milestone = ` [${pr.milestone[0].title}]: `;
+        }
+
+        // Reviewers
+        let reviewers = '';
+        const reviewersObj = pr.requested_reviewers.map(user => user.login);
+        if (pr.requested_reviewers) {
+            reviewers = `
+*Reviewers:* ${reviewersObj.join(', ')}`;
+        }
+
+        // Assignees
+        let assignees = '';
+        const assigneesObj = pr.assignees.map(user => user.login);
+        if (pr.assignees) {
+            assignees = `
+*Assignees:* ${assigneesObj.join(', ')}`;
+        }
+
+        messageAttachments.push({
+            title: `${milestone}${pr.title}${labels}`,
+            title_link: pr.html_url,
+            text: `Created by *${pr.user.login}* on ${createdByDateString}.${reviewers}${assignees}
+_Last updated ${lastUpdatedDateString}_`,
+            mrkdwn_in: [
+                'text',
+            ],
+        });
+    });
 
     bot.reply(message, {
-        text: `Here is a list of <@${message.user}>'s Pull Requests:`,
+        text: `Here is a list of PRs where you're a reviewer, <@${message.user}>!`,
         attachments: messageAttachments,
     });
 
