@@ -5,7 +5,7 @@
 */
 
 module.exports = (controller) => {
-    controller.on('slash_command', (bot, message) => {
+    controller.on('test', (bot, message) => {
         // reply to slash command
         bot.replyInteractive(message, {
             text: 'Can you keep a secret?',
