@@ -1,25 +1,25 @@
-var debug = require('debug')('botkit:oauth');
+const debug = require('debug')('botkit:oauth');
 
-module.exports = function(webserver, controller) {
-
-    var handler = {
-        login: function(req, res) {
+function oauth(webserver, controller) {
+    const handler = {
+        login(req, res) {
             res.redirect(controller.getAuthorizeURL());
         },
-        oauth: function(req, res) {
-            var code = req.query.code;
+        oauth(req, res) {
+            const {
+                code,
+            } = req.query;
 
             // we need to use the Slack API, so spawn a generic bot with no token
-            var slackapi = controller.spawn({});
+            const slackapi = controller.spawn({});
 
-            var opts = {
+            const opts = {
                 client_id: controller.config.clientId,
                 client_secret: controller.config.clientSecret,
-                code: code
+                code,
             };
 
-            slackapi.api.oauth.access(opts, function(err, auth) {
-
+            slackapi.api.oauth.access(opts, (err, auth) => {
                 if (err) {
                     debug('Error confirming oauth', err);
                     return res.redirect('/login_error.html');
@@ -28,10 +28,11 @@ module.exports = function(webserver, controller) {
                 // use the token we got from the oauth
                 // to call auth.test to make sure the token is valid
                 // but also so that we reliably have the team_id field!
-                slackapi.api.auth.test({token: auth.access_token}, function(err, identity) {
-
-                    if (err) {
-                        debug('Error fetching user identity', err);
+                slackapi.api.auth.test({
+                    token: auth.access_token,
+                }, (error, identity) => {
+                    if (error) {
+                        debug('Error fetching user identity', error);
                         return res.redirect('/login_error.html');
                     }
 
@@ -44,19 +45,19 @@ module.exports = function(webserver, controller) {
                     // a botkit event here with the payload so it can be handled
                     // by the developer without meddling with the actual oauth route.
 
+                    /* eslint-disable no-param-reassign */
                     auth.identity = identity;
                     controller.trigger('oauth:success', [auth]);
 
                     res.cookie('team_id', auth.team_id);
                     res.cookie('bot_user_id', auth.bot.bot_user_id);
                     res.redirect('/login_success.html');
-
+                    return true;
                 });
-
-
+                return true;
             });
-        }
-    }
+        },
+    };
 
 
     // Create a /login link
@@ -74,3 +75,5 @@ module.exports = function(webserver, controller) {
 
     return handler;
 }
+
+module.exports = oauth;

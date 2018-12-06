@@ -5,6 +5,8 @@ module.exports = {
         "plugin:node/recommended"
     ],
     "rules": {
+        "global-require": "off",
+        'indent': [ 'error', 4 ],
         "node/exports-style": ["error", "module.exports"],
         "node/prefer-global/buffer": ["error", "always"],
         "node/prefer-global/console": ["error"],
