@@ -1,20 +1,19 @@
-var debug = require('debug')('botkit:user_registration');
+const debug = require('debug')('botkit:user_registration');
 
-module.exports = function(controller) {
-
+/* eslint-disable no-param-reassign */
+function userRegistration(controller) {
     /* Handle event caused by a user logging in with oauth */
-    controller.on('oauth:success', function(payload) {
-
+    controller.on('oauth:success', (payload) => {
         debug('Got a successful login!', payload);
         if (!payload.identity.team_id) {
             debug('Error: received an oauth response without a team id', payload);
         }
-        controller.storage.teams.get(payload.identity.team_id, function(err, team) {
+        controller.storage.teams.get(payload.identity.team_id, (err, team) => {
             if (err) {
                 debug('Error: could not load team from storage system:', payload.identity.team_id, err);
             }
 
-            var new_team = false;
+            let newTeam = false;
             if (!team) {
                 team = {
                     id: payload.identity.team_id,
@@ -22,7 +21,7 @@ module.exports = function(controller) {
                     url: payload.identity.url,
                     name: payload.identity.team,
                 };
-                var new_team= true;
+                newTeam = true;
             }
 
             team.bot = {
@@ -32,33 +31,31 @@ module.exports = function(controller) {
                 app_token: payload.access_token,
             };
 
-            var testbot = controller.spawn(team.bot);
+            const testbot = controller.spawn(team.bot);
 
-            testbot.api.auth.test({}, function(err, bot_auth) {
-                if (err) {
+            testbot.api.auth.test({}, (error, botAuth) => {
+                if (error) {
                     debug('Error: could not authenticate bot user', err);
                 } else {
-                    team.bot.name = bot_auth.user;
+                    team.bot.name = botAuth.user;
 
                     // add in info that is expected by Botkit
-                    testbot.identity = bot_auth;
+                    testbot.identity = botAuth;
 
-                    testbot.identity.id = bot_auth.user_id;
-                    testbot.identity.name = bot_auth.user;
+                    testbot.identity.id = botAuth.user_id;
+                    testbot.identity.name = botAuth.user;
 
                     testbot.team_info = team;
 
                     // Replace this with your own database!
 
-                    controller.storage.teams.save(team, function(err, id) {
-                        if (err) {
+                    controller.storage.teams.save(team, (saveError, id) => {
+                        if (saveError) {
                             debug('Error: could not save team record:', err);
+                        } else if (newTeam) {
+                            controller.trigger('create_team', [testbot, team]);
                         } else {
-                            if (new_team) {
-                                controller.trigger('create_team', [testbot, team]);
-                            } else {
-                                controller.trigger('update_team', [testbot, team]);
-                            }
+                            controller.trigger('update_team', [testbot, team]);
                         }
                     });
                 }
@@ -67,8 +64,7 @@ module.exports = function(controller) {
     });
 
 
-    controller.on('create_team', function(bot, team) {
-
+    controller.on('create_team', (bot, team) => {
         debug('Team created:', team);
 
         // Trigger an event that will establish an RTM connection for this bot
@@ -76,16 +72,14 @@ module.exports = function(controller) {
 
         // Trigger an event that will cause this team to receive onboarding messages
         controller.trigger('onboard', [bot, team]);
-
     });
 
 
-    controller.on('update_team', function(bot, team) {
-
+    controller.on('update_team', (bot, team) => {
         debug('Team updated:', team);
         // Trigger an event that will establish an RTM connection for this bot
         controller.trigger('rtm:start', [bot]);
-
     });
-
 }
+
+module.exports = userRegistration;
