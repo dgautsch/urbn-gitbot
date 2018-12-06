@@ -8,7 +8,6 @@ module.exports = function(webserver, controller) {
         },
         oauth: function(req, res) {
             var code = req.query.code;
-            var state = req.query.state;
 
             // we need to use the Slack API, so spawn a generic bot with no token
             var slackapi = controller.spawn({});
@@ -25,9 +24,6 @@ module.exports = function(webserver, controller) {
                     debug('Error confirming oauth', err);
                     return res.redirect('/login_error.html');
                 }
-
-                // what scopes did we get approved for?
-                var scopes = auth.scope.split(/\,/);
 
                 // use the token we got from the oauth
                 // to call auth.test to make sure the token is valid

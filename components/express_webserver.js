@@ -1,8 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var querystring = require('querystring');
-var debug = require('debug')('botkit:webserver');
 var http = require('http');
 var hbs = require('express-hbs');
 
@@ -28,8 +26,8 @@ module.exports = function(controller) {
     webserver.set('views', __dirname + '/../views/');
 
     // import express middlewares that are present in /components/express_middleware
-    var normalizedPath = require("path").join(__dirname, "express_middleware");
-    require("fs").readdirSync(normalizedPath).forEach(function(file) {
+    var middlewarePath = require("path").join(__dirname, "express_middleware");
+    require("fs").readdirSync(middlewarePath).forEach(function(file) {
         require("./express_middleware/" + file)(webserver, controller);
     });
 
@@ -44,8 +42,8 @@ module.exports = function(controller) {
     });
 
     // import all the pre-defined routes that are present in /components/routes
-    var normalizedPath = require("path").join(__dirname, "routes");
-    require("fs").readdirSync(normalizedPath).forEach(function(file) {
+    var routerPath = require("path").join(__dirname, "routes");
+    require("fs").readdirSync(routerPath).forEach(function(file) {
       require("./routes/" + file)(webserver, controller);
     });
 

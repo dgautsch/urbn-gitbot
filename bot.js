@@ -66,7 +66,6 @@ if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
 }
 
 const Botkit = require('botkit');
-const debug = require('debug')('botkit:main');
 
 const bot_options = {
     clientId: process.env.clientId,

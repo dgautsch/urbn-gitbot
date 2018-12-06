@@ -1,7 +1,6 @@
 const debug = require('debug')('github-authentication:debug')
 const error = require('debug')('github-authentication:error')
 const axios = require('axios')
-const octokit = require('@octokit/rest')
 
 
 module.exports = function(webserver, controller) {
@@ -36,10 +35,10 @@ module.exports = function(webserver, controller) {
         } else {
             error("response with no code")
         }
-        
+
         res.redirect('/')
     })
-    
+
     webserver.get('/github', (req, res) => {
         debug('entered on /github')
         return res.redirect(`https://github.com/login/oauth/authorize` +
