@@ -6,6 +6,8 @@ const envFile = `${__dirname}/.env`;
 /* eslint-disable import/no-dynamic-require */
 if (fs.existsSync(envFile)) {
     env(`${__dirname}/.env`);
+
+
 }
 
 function usageTip() {
