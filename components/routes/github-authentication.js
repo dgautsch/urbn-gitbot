@@ -3,7 +3,6 @@ const error = require('debug')('github-authentication:error');
 const axios = require('axios');
 const getPR = require('../github-pr');
 
-getPR('dgautsch', 'urbn-gitbot').then(res => console.log(res));
 
 function githubAuth(webserver, controller) {
     debug('Configured /github/auth url');
@@ -26,8 +25,7 @@ function githubAuth(webserver, controller) {
         + `&redirect_uri=${process.env.GITHUB_REDIRECT_URI}`)
                 .then(result => {
                     let splitResults = result.data.split("&");
-                    const token = splitResults[0].split('=')[1];
-                    console.log(splitResults)
+                    debug(splitResults)
 
                     return 
                 })
@@ -50,10 +48,7 @@ function githubAuth(webserver, controller) {
                         }
                     )
                     .then(result => result.data.forEach(e => {
-                        console.log(e.name)
-                        if (e.name == 'MonoWeb') {
-                            console.log(e)
-                        }
+                        debug(e.name)
                     }))
                     .catch(err => console.log(err))
         debug('entered on /github');
