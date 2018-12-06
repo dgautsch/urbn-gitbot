@@ -18,8 +18,8 @@ function usageTip() {
 }
 
 if (!process.env.PORT) {
-  usage_tip();
-  process.exit(1);
+    usageTip();
+    throw new Error('No port set');
 }
 
 const Botkit = require('botkit');
