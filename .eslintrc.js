@@ -1,5 +1,9 @@
 module.exports = {
-    "extends": ["eslint:recommended", "plugin:node/recommended"],
+    "extends": [
+        "eslint:recommended",
+        "airbnb-base",
+        "plugin:node/recommended"
+    ],
     "rules": {
         "node/exports-style": ["error", "module.exports"],
         "node/prefer-global/buffer": ["error", "always"],
@@ -10,7 +14,8 @@ module.exports = {
         "no-console": "off",
         "no-unused-vars": ["error", {
             "args": "none"
-        }]
+        }],
+        "quotes": ["error", "single"]
     },
     "env": {
         "node": true
