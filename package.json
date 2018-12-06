@@ -15,7 +15,6 @@
     "debug": "node --inspect-brk bot.js"
   },
   "dependencies": {
-    "@octokit/rest": "^16.1.0",
     "axios": "^0.18.0",
     "body-parser": "^1.15.2",
     "botkit": "^0.6.21",
@@ -24,7 +23,9 @@
     "debug": "^2.3.3",
     "express": "^4.14.0",
     "express-hbs": "^1.0.4",
+    "jsonwebtoken": "^8.4.0",
     "node-env-file": "^0.1.8",
+    "node-rsa": "^1.0.1",
     "nodemon": "^1.18.7",
     "querystring": "^0.2.0",
     "request": "^2.79.0",
