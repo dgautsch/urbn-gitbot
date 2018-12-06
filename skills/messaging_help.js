@@ -13,6 +13,8 @@ const helpMessage = `I'm here to help you find out what PRs you currently have o
 
 module.exports = function(controller) {
 
+    // Bot joins a channel
+
     controller.on('bot_channel_join,bot_group_join', (bot, message) => {
 
         bot.reply(message, {
