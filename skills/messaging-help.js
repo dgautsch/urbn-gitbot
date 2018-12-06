@@ -13,14 +13,16 @@ const helpMessage = `I'm here to help you find out what PRs you currently have o
 
 module.exports = (controller) => {
 
-    // Bot joins a channel
+    // Generic help messaging event
 
-    controller.on('bot_channel_join,bot_group_join', (bot, message) => {
+    controller.on('get_help_message', (bot, message, initialMessage) => {
 
         bot.reply(message, {
+            ...(initialMessage ? {
+                text: initialMessage,
+            } : {}),
             attachments: [{
                 title: `Beep, boop! I'm the ${config.UGB_BOT_NAME}!`,
-                pretext: `Thanks for inviting me, <@${message.inviter}>!`,
                 text: helpMessage,
                 mrkdwn_in: [
                     'text',
@@ -31,8 +33,31 @@ module.exports = (controller) => {
 
     });
 
-    // Someone asks for help
+    controller.on('get_help_message_ephemeral', (bot, message, initialMessage) => {
 
+        bot.replyInteractive(message, {
+            ...(initialMessage ? {
+                text: initialMessage,
+            } : {}),
+            attachments: [{
+                title: `Beep, boop! I'm the ${config.UGB_BOT_NAME}!`,
+                text: helpMessage,
+                mrkdwn_in: [
+                    'text',
+                    'pretext',
+                ],
+            }],
+        });
+
+    });
+
+    // Bot joins a channel
+    controller.on('bot_channel_join,bot_group_join', (bot, message) => {
+        const initialMessage = `Thanks for inviting me, <@${message.inviter}>!`;
+        controller.trigger('get_help_message', [bot, message, initialMessage]);
+    });
+
+    // Someone asks for help
     const helpStrings = [
         // Need to double escape the backslash because we're within single quotes
         '^what can you do\\??$',
@@ -70,29 +95,59 @@ Does that help? No? You could always try turning it off and then back on again.`
 
     // Someone asks who created me
 
-    const creatorStrings = [
-        '^who made you\??$',
-        '^creators$',
-    ];
-
-    controller.hears(creatorStrings, 'direct_mention', (bot, message) => {
-        bot.reply(message, {
-            attachments: [{
-                pretext: `Thanks for asking, <@${message.user}>!`,
-                text: `I was created during the 2018 URBN Fall Hackathon in a join effort by the following humans:
+    const creatorsMessage = `I was created during the 2018 URBN Fall Hackathon in a join effort by the following humans:
 
 *Allan Ashenfelter* - Manager
 *Dan Gautsch* - Technical Lead UCC
 *Michael Greenberg* - Software Engineer
 *Sean Kennedy* - Senior Software Engineer
 *Brandon Wolvin* - Technical Lead Account
-*John Zlotek* - Co-op`,
+*John Zlotek* - Co-op`;
+
+    controller.on('get_creator_message', (bot, message, initialMessage) => {
+
+        bot.reply(message, {
+            ...(initialMessage ? {
+                text: initialMessage,
+            } : {}),
+            attachments: [{
+                title: `Beep, boop! Here are the humans that created me!`,
+                text: creatorsMessage,
                 mrkdwn_in: [
                     'text',
                     'pretext',
                 ],
             }],
         });
+
+    });
+
+    controller.on('get_creator_message_ephemeral', (bot, message, initialMessage) => {
+
+        bot.replyInteractive(message, {
+            ...(initialMessage ? {
+                text: initialMessage,
+            } : {}),
+            attachments: [{
+                title: `Beep, boop! Here are the humans that created me!`,
+                text: creatorsMessage,
+                mrkdwn_in: [
+                    'text',
+                    'pretext',
+                ],
+            }],
+        });
+
+    });
+
+    const creatorStrings = [
+        '^who made you\??$',
+        '^creators$',
+    ];
+
+    controller.hears(creatorStrings, 'direct_mention', (bot, message) => {
+        const initialMessage = `Thanks for asking, <@${message.user}>!`;
+        controller.trigger('get_creator_message', [bot, message, initialMessage]);
     });
 
 };

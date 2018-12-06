@@ -2,17 +2,6 @@ const debug = require('debug')('message:github');
 const axios = require('axios');
 
 function gitHubAuth(controller) {
-    // this should be converted to a slash command
-    controller.on('slash_command', (bot, message) => {
-        controller.storage.users.get(message.user, (err, user) => {
-            if (err) {
-                console.error(err);
-                controller.trigger('do_github_auth', [bot, message]);
-            } else if (user.id && user.github_bearer) {
-                controller.trigger('get_github_prs', [bot, message]);
-            }
-        });
-    });
 
     controller.on('get_github_prs', (bot, message) => {
         // @todo add logic to make the GitHub request for PRs.

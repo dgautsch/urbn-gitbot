@@ -18,8 +18,8 @@ function usageTip() {
 }
 
 if (!process.env.PORT) {
-    usageTip();
-    throw new Error('No port set');
+  usage_tip();
+  process.exit(1);
 }
 
 const Botkit = require('botkit');
@@ -53,7 +53,7 @@ if (process.env.clientId && process.env.clientSecret) {
         res.render('index', {
             domain: req.get('host'),
             protocol: req.protocol,
-            layout: 'layouts/default',
+            layout: 'layouts/default'
         });
     });
 
@@ -68,7 +68,19 @@ if (process.env.clientId && process.env.clientSecret) {
 
     // Require all skills
     require('fs').readdirSync(normalizedPath).forEach((file) => {
-        require(`./skills/${file}`)(controller);
+        const path = `./skills/${file}`;
+        fs.lstat(path, (err, stats) => {
+
+            // Handle general errors
+            if (err) {
+                return console.log(err);
+            }
+
+            // If this is a skills file, require it
+            if (stats.isFile()) {
+                require(path)(controller);
+            }
+        });
     });
 } else {
     webserver.get('/', (req, res) => {
