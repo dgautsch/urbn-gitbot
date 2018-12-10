@@ -5,9 +5,14 @@ const RSA = require('node-rsa');
 const axios = require('axios');
 const error = require('debug')('github-pr:error');
 
-const cert = fs.readFileSync(path.resolve(__dirname, '../urbn-gitbot.2018-12-06.private-key.pem'));
-const rsa = new RSA(cert);
-const publicPem = rsa.exportKey('pkcs1-private-pem').toString();
+const GITHUB_PEM_PATH = path.resolve(__dirname, '..', process.env.GITHUB_APP_PEM);
+
+let publicPem = '';
+if (fs.existsSync(GITHUB_PEM_PATH)) {
+    const cert = fs.readFileSync(GITHUB_PEM_PATH);
+    const rsa = new RSA(cert);
+    publicPem = rsa.exportKey('pkcs1-private-pem').toString();
+}
 
 function createHeader(token, type = 'Bearer') {
     return {
@@ -20,7 +25,7 @@ function createHeader(token, type = 'Bearer') {
 
 module.exports = async function getPRsForRepo(owner, repo) {
     const JWT = jwt.sign({
-        iss: 21940,
+        iss: process.env.GITHUB_APP_ID,
         iat: parseInt(Date.UTC(Date.now()), 10),
     }, publicPem, { expiresIn: '10m', algorithm: 'RS256' });
 
