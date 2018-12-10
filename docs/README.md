@@ -48,6 +48,11 @@ UGB_BOT_NAME=GitBot
 # Must be updated in Slack, this is used in the help messaging only
 UGB_SLASH_COMMAND=gitbot
 
+# GitHub App secret key name (in root directory)
+GITHUB_APP_PEM=
+# GitHub App id (5 digit number usually)
+GITHUB_APP_ID=
+
 # note: .env is a shell file so there can't be spaces around =
 ```
 
